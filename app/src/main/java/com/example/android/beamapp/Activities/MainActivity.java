@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import com.example.android.beamapp.Model.DownloadTaskData;
 import com.example.android.beamapp.Model.User;
-import com.example.android.beamapp.Networking.DownloadTask;
 import com.example.android.beamapp.Networking.PostDownloadTask;
+import com.example.android.beamapp.Networking.Urls;
 import com.example.android.beamapp.R;
 
 import org.json.JSONException;
@@ -39,20 +39,30 @@ public class MainActivity extends AppCompatActivity {
         String email = String.valueOf(emailText.getText());
         String password = String.valueOf(passwordText.getText());
         loggedInUser = new User("beam@beam.com", "testest");
-        DownloadTaskData data = new DownloadTaskData("https://api.gobeam.me/api/authentications",loggedInUser );
 
-
+        DownloadTaskData data = new DownloadTaskData(Urls.BASE_URL + Urls.LOGIN ,loggedInUser );
         PostDownloadTask task = new PostDownloadTask(){
             @Override
             protected void onPostExecute(JSONObject obj) {
                 super.onPostExecute(obj);
 
                 if(obj != null){
+                    try {
+                        loggedInUser.token = obj.getString("token");
+                        JSONObject user = obj.getJSONObject("user");
+                        loggedInUser.userID = user.getString("id");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent(getApplicationContext(),ViewUserPresentations.class);
                     intent.putExtra("user",(Serializable)loggedInUser);
                     finish();
                     startActivity(intent);
-                    Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(getApplicationContext(), "Login Success ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Loading your Presentations ", Toast.LENGTH_SHORT).show();
+
                 }else{
                     Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                 }

@@ -23,7 +23,7 @@ public class GetDownloadTask extends DownloadTask {
         try {
             HttpsURLConnection connection = (HttpsURLConnection) new URL(params[0].Url).openConnection();
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorize","SFMyNTY.g3QAAAACZAAEZGF0YWFcZAAGc2lnbmVkbgYAaDsCPVcB.bsn-RmDMBscmpuebMsHWZeOIXW7tpqZ6fzkJTXPlf_o");
+            connection.setRequestProperty("Authorize",params[0].User.token);
             connection.connect();
 
 
